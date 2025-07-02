@@ -1,0 +1,23 @@
+{% extends 'dashboard.html' %} {% block addcss %}
+
+<link rel="stylesheet" href="{{url_for('static',filename='fileupload.css')}}" />
+{% endblock %} {% block content %}
+<body>
+  <center>
+    <!-- <h3 class="user">Welcome {{session.get('user')}}</h3> -->
+
+    <form method="post" enctype="multipart/form-data">
+      <label>Upload File</label>
+      <input type="file" name="uploadfile" /><br />
+      <button id="button">Submit</button>
+    </form>
+  </center>
+  <center>
+    <div class="rights">
+      <h6 style="color: black">
+        2025, Copyrights Sridevi Milinda, All Rights Reserved.
+      </h6>
+    </div>
+  </center>
+</body>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'dashboard.html' %}
+{% block addcss %}
+    <link
+      rel="stylesheet"
+      href="{{url_for('static',filename='viewallnotes.css')}}"
+    />
+{% endblock %}
+{% block content %}
+  <body>
+    <center>
+      <h3 class="user">Welcome {{session.get('user')}}</h3>
+
+      <h3 class="one">All Files..</h3>
+      <table border="1px" cellspacing="0px">
+        <tr>
+          <th>File_id</th>
+          <th>Filename</th>
+          <th>Created at</th>
+        </tr>
+        {% for i in allfilesdata %} 
+        <tr>
+          <td>{{i[0]}}</td>
+          <td>{{i[1]}}</td>
+          <td>{{i[2]}}</td>
+          <td><a href="{{url_for('viewfile',fid=i[0])}}">viewfile</a></td>
+          <td><a href="{{url_for('downloadfile',fid=i[0])}}">Download File</a></td>
+          <td><a href="{{url_for('deletefile',fid=i[0])}}">Delete</a></td>
+        </tr>
+        {% endfor %}
+      </table>
+    </center>
+    <center>
+      <div class="rights">
+        <h6 style="color: black">
+          2025, Copyrights Sridevi Milinda, All Rights Reserved.
+        </h6>
+      </div>
+    </center>
+  </body>
+{% endblock %}

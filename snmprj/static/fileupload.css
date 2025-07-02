@@ -1,0 +1,24 @@
+body {
+  background: linear-gradient(
+    to left,
+    #a9e1dc,
+    #c7ece5,
+    #f5f9e8,
+    #fadddd,
+    #fbcfca,
+    #fdbaba
+  );
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.rights {
+  /* margin-bottom: 5%; */
+  font-size: 30px;
+  margin-top: 25%;
+  /* background-color: #e9731c; */
+}
+#button {
+  margin-top: 1%;
+  margin-left: -8%;
+  border-radius: 9%;
+  border: 1px solid green;
+}

@@ -1,0 +1,41 @@
+{% extends 'dashboard.html' %}
+{% block addcss %}
+    <link
+      rel="stylesheet"
+      href="{{url_for('static',filename='addnotes.css')}}"
+    />{% endblock %}
+{% block content %}
+  
+    <center>
+      <h3 class="user">Welcome {{session.get('user')}}</h3>
+      <section class="addnotes-main">
+        <div class="one">
+          <img
+            src="https://cdn.dribbble.com/userupload/26549214/file/original-4677afb3f6e8724e0577543f15acfa7c.gif"
+            width="130%"
+          />
+        </div><br>
+        {{notesdata[3]}}
+        <div class="two">
+            <h3>view notes</h3>
+            <label>Title</label>
+            <input
+              type="text"
+              placeholder="Enter Title"
+              name="title" value="{{notesdata[1]}}"
+              readonly
+            /><br />
+            <label>Description</label>
+            <textarea
+              rows="6"
+              cols="2"
+              placeholder="Enter Description"
+              name="description"
+              readonly>{{notesdata[2]}}</textarea><br />
+        </div>
+      </section>
+      <div class="rights">
+        <h6>2025, Copyrights Sridevi Milinda, All Rights Reserved.</h6>
+      </div>
+    </center>
+{% endblock %}

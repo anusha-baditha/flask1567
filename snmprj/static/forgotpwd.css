@@ -1,0 +1,30 @@
+body {
+  background: linear-gradient(
+    to left,
+    #a9e1dc,
+    #c7ece5,
+    #f5f9e8,
+    #fadddd,
+    #fbcfca,
+    #fdbaba
+  );
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+.rights-1 {
+  font-size: 30px;
+  margin-top: 28%;
+}
+.one-1 {
+  margin-top: 3%;
+}
+
+#btn-1 {
+  margin-top: 1.5%;
+}
+#formy-1 input[type="text"] {
+  border-radius: 5px;
+  height: 4vh;
+  width: 15vw;
+  border: 1px solid rgb(174, 174, 226);
+  padding-left: 2%;
+}
