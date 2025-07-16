@@ -12,22 +12,12 @@ import re
 client = razorpay.Client(auth=("rzp_test_IW39YgU8i2HhFs", "gtE4ty01rVjtxpu9BbTdgNrR"))
 application=Flask(__name__)
 #config=pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
+mydb=mysql.connector.connect(user='root',host='localhost',password='admin',db='ecom')
+
 application.config['SESSION_TYPE']='filesystem'
 Session(application)
 application.secret_key='codegnan@2025'
-user=os.environ.get('RDS_USERNAME')
-db=os.environ.get('RDS_DB_NAME')
-password=os.environ.get('RDS_PASSWORD')
-port=os.environ.get('RDS_PORT')
-host=os.environ.get('RDS_HOSTNAME')
-with mysql.connector.connect(user=user,port=port,db=db,password=password,host=host) as conn:
-    cursor=conn.cursor()
-    cursor.execute("CREATE TABLE if not exists admin_details (admin_username varchar(30) NOT NULL,admin_email varchar(50) NOT NULL,admin_password varbinary(255) DEFAULT NULL,created_at datetime DEFAULT CURRENT_TIMESTAMP,address text,PRIMARY KEY (admin_email),UNIQUE KEY admin_email (admin_email))")
-    cursor.execute("CREATE TABLE if not exists items (itemid binary(16) NOT NULL,item_name mediumtext NOT NULL,description longtext NOT NULL,item_cost decimal(20,4) NOT NULL,item_quantity mediumint unsigned DEFAULT NULL,item_category enum('Home applicationliances','Electronics','Sports','Fashion','Grocery') DEFAULT NULL,added_by varchar(50) DEFAULT NULL,created_at datetime DEFAULT CURRENT_TIMESTAMP,imgname varchar(20) DEFAULT NULL,PRIMARY KEY (itemid),KEY items_addedby (added_by),CONSTRAINT items_addedby FOREIGN KEY (added_by) REFERENCES admin_details (admin_email))")
-    cursor.execute("CREATE TABLE if not exists users (useremail varchar(30) NOT NULL,username varchar(30) NOT NULL,password varbinary(255) DEFAULT NULL,address text NOT NULL,created_at datetime DEFAULT CURRENT_TIMESTAMP,gender enum('Male','Female','Other') DEFAULT NULL,PRIMARY KEY (useremail))")
-    cursor.execute("CREATE TABLE if not exists orders (order_id int unsigned NOT NULL AUTO_INCREMENT,order_date datetime DEFAULT CURRENT_TIMESTAMP,item_id binary(16) NOT NULL,item_name varchar(255) NOT NULL,total decimal(10,2) DEFAULT NULL,payment_by varchar(30) DEFAULT NULL,PRIMARY KEY (order_id),KEY payment_by (payment_by),KEY item_id (item_id),CONSTRAINT orders_ibfk_1 FOREIGN KEY (payment_by) REFERENCES users (useremail) ON DELETE SET NULL ON UPDATE CASCADE,CONSTRAINT orders_ibfk_2 FOREIGN KEY (item_id) REFERENCES items(itemid) ON UPDATE CASCADE)")
-    cursor.execute("CREATE TABLE if not exists reviews (r_id int unsigned NOT NULL AUTO_INCREMENT,review_text text,create_at datetime DEFAULT CURRENT_TIMESTAMP,itemid binary(16) DEFAULT NULL,added_by varchar(30) DEFAULT NULL,rating enum('1','2','3','4','5') DEFAULT NULL,PRIMARY KEY (r_id),KEY itemis (itemid),KEY added_by (added_by),CONSTRAINT reviews_ibfk_1 FOREIGN KEY (itemid) REFERENCES items (itemid) ON DELETE SET NULL ON UPDATE CASCADE,CONSTRAINT reviews_ibfk_2 FOREIGN KEY (added_by) REFERENCES users (useremail) ON DELETE SET NULL ON UPDATE CASCADE)")
-mydb=mysql.connector.connect(user=user,host=host,password=password,db=db,port=port)
+
 @application.route('/')
 def home():
     return render_template('welcome.html')
