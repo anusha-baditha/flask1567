@@ -12,7 +12,7 @@ import re
 client = razorpay.Client(auth=("rzp_test_IW39YgU8i2HhFs", "gtE4ty01rVjtxpu9BbTdgNrR"))
 application=Flask(__name__)
 #config=pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
-mydb=mysql.connector.connect(user='root',host='localhost',password='admin',db='ecom')
+mydb=mysql.connector.connect(user='root',host='localhost',password='admin',db='ecommy')
 
 application.config['SESSION_TYPE']='filesystem'
 Session(application)
