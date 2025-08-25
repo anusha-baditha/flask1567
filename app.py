@@ -10,18 +10,18 @@ import razorpay
 import pdfkit
 import re
 client = razorpay.Client(auth=("rzp_test_IW39YgU8i2HhFs", "gtE4ty01rVjtxpu9BbTdgNrR"))
-application=Flask(__name__)
+app=Flask(__name__)
 #config=pdfkit.configuration(wkhtmltopdf=r'C:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe')
 mydb=mysql.connector.connect(user='root',host='localhost',password='admin',db='ecommy')
 
-application.config['SESSION_TYPE']='filesystem'
-Session(application)
-application.secret_key='codegnan@2025'
+app.config['SESSION_TYPE']='filesystem'
+Session(app)
+app.secret_key='codegnan@2025'
 
-@application.route('/')
+@app.route('/')
 def home():
     return render_template('welcome.html')
-@application.route('/index')
+@app.route('/index')
 def index():
     try:
         cursor=mydb.cursor(buffered=True)
@@ -33,7 +33,7 @@ def index():
         return redirect(url_for('index'))
     else:
         return render_template('index.html',items_data=items_data)
-@application.route('/category/<ctype>')
+@app.route('/category/<ctype>')
 def category(ctype):
     try:
         cursor=mydb.cursor(buffered=True)
@@ -44,7 +44,7 @@ def category(ctype):
         flash('Could not fetch the items')
         return redirect(url_for('index'))
     return render_template('dashboard.html',items_data=items_data)
-@application.route('/addcart/<itemid>/<name>/<price>/<category>/<img>')
+@app.route('/addcart/<itemid>/<name>/<price>/<category>/<img>')
 def addcart(itemid,name,price,category,img):
     print(session)
     if session.get('user'):
@@ -62,7 +62,7 @@ def addcart(itemid,name,price,category,img):
     else:
         return redirect(url_for('userlogin'))
 
-@application.route('/viewcart')
+@app.route('/viewcart')
 def viewcart():
     if session.get('user'):
         items=session[session.get('user')]
@@ -74,7 +74,7 @@ def viewcart():
     else:
         flash('pls login fisrt')
         return redirect(url_for('userlogin'))
-@application.route('/removecart/<itemid>')
+@app.route('/removecart/<itemid>')
 def removecart(itemid):
     if session.get('user'):
         if session[session.get('user')]:
@@ -88,19 +88,19 @@ def removecart(itemid):
     else:
         flash(f'pls login first')
         return redirect(url_for('userlogin'))
-@application.route('/description/<itemid>')
+@app.route('/description/<itemid>')
 def description(itemid):
     try:
         cursor=mydb.cursor(buffered=True)
         cursor.execute('select bin_to_uuid(itemid),item_name,description,item_cost,item_quantity,item_category,imgname,created_at from items where itemid=uuid_to_bin(%s)',[itemid])
-        itemdata=cursor.fetchone() #(1,'applicationle','sdfghj',345,789,'grocery','applicationle.jpg','2025-09-23')
+        itemdata=cursor.fetchone() #(1,'apple','sdfghj',345,789,'grocery','apple.jpg','2025-09-23')
     except Exception as e:
         print(f'ERROR:{e}')
         flash("counld n't fetch details")
         return redirect(url_for('index'))
     else:
         return render_template('description.html',itemdata=itemdata)
-@application.route('/addreview/<itemid>',methods=['GET','POST'])   
+@app.route('/addreview/<itemid>',methods=['GET','POST'])   
 def addreview(itemid):
     if session.get('user'):
         if request.method=='POST':
@@ -115,7 +115,7 @@ def addreview(itemid):
     else:
         flash('pls login to add review')
         return redirect(url_for('description',itemid=itemid))
-@application.route('/readreviews/<itemid>')
+@app.route('/readreviews/<itemid>')
 def readreviews(itemid):
     try:
         cursor=mydb.cursor(buffered=True)
@@ -147,7 +147,7 @@ def readreviews(itemid):
 
 
 
-@application.route('/admincreate',methods=['GET','POST'])
+@app.route('/admincreate',methods=['GET','POST'])
 def admincreate():
     if request.method=='POST':
         username=request.form['username']
@@ -180,7 +180,7 @@ def admincreate():
             
 
     return render_template('admincreate.html')
-@application.route('/otpverify/<endata>',methods=['GET','POST'])
+@app.route('/otpverify/<endata>',methods=['GET','POST'])
 def otpverify(endata):
     if request.method=='POST':
         uotp=request.form['otp']
@@ -205,7 +205,7 @@ def otpverify(endata):
         else:
             flash(f'OTP Wrong ')
     return render_template('adminotp.html')
-@application.route('/adminlogin',methods=['GET','POST'])
+@app.route('/adminlogin',methods=['GET','POST'])
 def adminlogin():
     if request.method=='POST':
         try:
@@ -234,10 +234,10 @@ def adminlogin():
                 return redirect(url_for('adminlogin'))
 
     return render_template('adminlogin.html')
-@application.route('/admindashboard')
+@app.route('/admindashboard')
 def admindashboard():
     return render_template('adminpanel.html')
-@application.route('/additem',methods=['GET','POST'])
+@app.route('/additem',methods=['GET','POST'])
 def additem():
     if request.method=='POST':
         item_name=request.form['title']
@@ -249,7 +249,7 @@ def additem():
         #print(item_image.filename.split('.')[-1])
         filename=genotp()+'.'+item_image.filename.split('.')[-1]  #'Fy6Gr5.jpeg'
         try:
-            path=os.path.abspath(__file__) #C:\Users\User\Desktop\ecom\application.py
+            path=os.path.abspath(__file__) #C:\Users\User\Desktop\ecom\app.py
             dname=os.path.dirname(path) #C:\Users\User\Desktop\ecom
             print(dname)
             static_path=os.path.join(dname,'static')
@@ -269,7 +269,7 @@ def additem():
 
 
     return render_template('additem.html')
-@application.route('/viewitems')
+@app.route('/viewitems')
 def viewitems():
     if session.get('admin'):
         try:
@@ -285,7 +285,7 @@ def viewitems():
     else:
         flash(f'pls login first')
         return redirect(url_For('adminlogin'))
-@application.route('/view_item/<itemid>')
+@app.route('/view_item/<itemid>')
 def view_item(itemid):
     try:
         cursor=mydb.cursor(buffered=True)
@@ -297,7 +297,7 @@ def view_item(itemid):
         return redirect(url_for('viewitems'))
     else:
         return render_template('view_item.html',itemdata=itemdata)
-@application.route('/updateitem/<itemid>',methods=['GET','POST'])
+@app.route('/updateitem/<itemid>',methods=['GET','POST'])
 def updateitem(itemid):
     try:
         cursor=mydb.cursor(buffered=True)
@@ -320,7 +320,7 @@ def updateitem(itemid):
                 filename=itemdata[6]
             else:
                 filename=genotp()+'.'+item_img.filename.split('.')[-1]
-                path=os.path.abspath(__file__) #C:\Users\User\Desktop\ecom\application.py
+                path=os.path.abspath(__file__) #C:\Users\User\Desktop\ecom\app.py
                 dname=os.path.dirname(path) #C:\Users\User\Desktop\ecom
                 print(dname)
                 static_path=os.path.join(dname,'static')
@@ -334,13 +334,13 @@ def updateitem(itemid):
             flash('item updated')
             return redirect(url_for('view_item',itemid=itemid))
         return render_template('update_item.html',item_data=itemdata)
-@application.route('/deleteitem/<itemid>')
+@app.route('/deleteitem/<itemid>')
 def deleteitem(itemid):
     try:
         cursor=mydb.cursor(buffered=True)
         cursor.execute('select imgname from items where itemid=uuid_to_bin(%s) and added_by=%s',[itemid,session.get('admin')])
         stored_imgname=cursor.fetchone()[0]
-        path=os.path.abspath(__file__) #C:\Users\User\Desktop\ecom\application.py
+        path=os.path.abspath(__file__) #C:\Users\User\Desktop\ecom\app.py
         dname=os.path.dirname(path) #C:\Users\User\Desktop\ecom
         static_path=os.path.join(dname,'static') #C:\Users\User\Desktop\ecom\static
         os.remove(os.path.join(static_path, stored_imgname))
@@ -354,7 +354,7 @@ def deleteitem(itemid):
     else:
         flash('item deleted successfully')
         return redirect(url_for('viewitems'))
-@application.route('/adminlogout')
+@app.route('/adminlogout')
 def adminlogout():
     if session.get('admin'):
         session.pop('admin')
@@ -362,7 +362,7 @@ def adminlogout():
     else:
         flash('To logout pls login first')
         return redirect(url_for('adminlogin'))
-@application.route('/usercreate',methods=['GET','POST'])
+@app.route('/usercreate',methods=['GET','POST'])
 def usercreate():
     if request.method=='POST':
         username=request.form['name']
@@ -395,7 +395,7 @@ def usercreate():
             
 
     return render_template('usersignup.html')
-@application.route('/userotpverify/<endata>',methods=['GET','POST'])
+@app.route('/userotpverify/<endata>',methods=['GET','POST'])
 def userotpverify(endata):
     if request.method=='POST':
         uotp=request.form['otp']
@@ -419,7 +419,7 @@ def userotpverify(endata):
         else:
             flash(f'OTP Wrong ')
     return render_template('userotp.html')
-@application.route('/userlogin',methods=['GET','POST'])
+@app.route('/userlogin',methods=['GET','POST'])
 def userlogin():
     if request.method=='POST':
         try:
@@ -454,7 +454,7 @@ def userlogin():
                 return redirect(url_for('userlogin'))
 
     return render_template('userlogin.html')
-@application.route('/userlogout')
+@app.route('/userlogout')
 def userlogout():
     if session.get('user'):
         session.pop('user')
@@ -462,7 +462,7 @@ def userlogout():
         return redirect(url_for('userlogin'))
     else:
         return redirect(url_for('userlogin'))
-@application.route('/pay/<itemid>/<name>/<float:price>/<quantity>',methods=['GET','POST'])
+@app.route('/pay/<itemid>/<name>/<float:price>/<quantity>',methods=['GET','POST'])
 def pay(itemid,name,price,quantity):
     if session.get('user'):
         try:
@@ -487,7 +487,7 @@ def pay(itemid,name,price,quantity):
     else:
         flash('pls login first')
         return redirect(url_for('userlogin'))
-@application.route('/success',methods=['GET','POST'])
+@app.route('/success',methods=['GET','POST'])
 def success():
     if request.method=='POST':
         payment_id=request.form['razorpay_payment_id']
@@ -512,7 +512,7 @@ def success():
             mydb.commit()
             flash(f'order placed with {total_amount}')
             return redirect(url_for('index'))
-@application.route('/orders')
+@app.route('/orders')
 def orders():
     if session.get('user'):
         try:
@@ -528,7 +528,7 @@ def orders():
     else:
         flash('pls login first')
         return redirect(url_for('userlogin'))
-'''@application.route('/getinvoice/<ordid>.pdf')
+'''@app.route('/getinvoice/<ordid>.pdf')
 def getinvoice(ordid):
     if session.get('user'):
         try:
@@ -539,7 +539,7 @@ def getinvoice(ordid):
             user_data=cursor.fetchone()
             html=render_template('bill.html',order_data=order_data,user_data=user_data)
             pdf=pdfkit.from_string(html,False,configuration=config)
-            response=Response(pdf,content_type='applicationlication/pdf')
+            response=Response(pdf,content_type='application/pdf')
             response.headers['Content-Disposition']='inline; filename=output.pdf'
             return response
         except Exception as e:
@@ -549,7 +549,7 @@ def getinvoice(ordid):
     else:
         flash('pls login first')
         return redirect(url_for('userlogin'))'''
-@application.route('/search',methods=['GET','POST'])
+@app.route('/search',methods=['GET','POST'])
 def search():
     if request.method=='POST':
         sdata=request.form['search']
@@ -576,4 +576,4 @@ def search():
 
         
 if __name__=='__main__':
-    application.run()
+    app.run()
